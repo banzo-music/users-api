@@ -20,7 +20,7 @@ describe('AppController', () => {
     });
     const name = 'Zach';
     it(`should return "Hello, ${name}!"`, () => {
-      expect(appController.getHello(name)).toBe(`Hello, ${name}!`);
+      expect(appController.getHello(name).message).toBe(`Hello, ${name}!`);
     });
   });
 });
