@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { User } from 'src/models/user.model';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { User, CreateUserDto } from 'src/models/user.model';
 import { RoleEnum } from 'src/models/role.model';
 
 @Injectable()
@@ -44,6 +44,25 @@ export class UsersService {
   }
 
   getUserById(id: string): User {
-    return this.users.find(user => user.id === id);
+    const user = this.users.find(user => user.id === id);
+    if (!user) {
+      throw new HttpException(
+        `User '${id}' does not exist`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return user;
+  }
+
+  addUser(u: CreateUserDto): User {
+    const { firstName, lastName } = u;
+    const user: User = {
+      id: `${this.users.length + 1}`,
+      firstName,
+      lastName,
+      roles: []
+    };
+    this.users.push(user);
+    return user;
   }
 }

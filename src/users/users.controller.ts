@@ -3,10 +3,12 @@ import {
   Get,
   Param,
   HttpException,
-  HttpStatus
+  HttpStatus,
+  Post,
+  Body
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from 'src/models/user.model';
+import { User, CreateUserDto } from 'src/models/user.model';
 
 @Controller('users')
 export class UsersController {
@@ -20,13 +22,11 @@ export class UsersController {
 
   @Get(':id')
   getUserById(@Param('id') id: string): User {
-    const user = this.usersService.getUserById(id);
-    if (!user) {
-      throw new HttpException(
-        `User '${id}' does not exist`,
-        HttpStatus.NOT_FOUND
-      );
-    }
-    return user;
+    return this.usersService.getUserById(id);
+  }
+
+  @Post()
+  createUser(@Body() user: CreateUserDto): User {
+    return this.usersService.addUser(user);
   }
 }
