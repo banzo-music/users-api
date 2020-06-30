@@ -1,5 +1,5 @@
-import { Role } from './role.model';
-import { IsString } from 'class-validator';
+import { Role, RoleEnum } from './role.model';
+import { IsString, IsOptional, IsArray, IsEnum } from 'class-validator';
 
 export interface User {
   id: string;
@@ -11,5 +11,12 @@ export interface User {
 export class CreateUserDto {
   @IsString()
   firstName: string;
+
+  @IsString()
   lastName: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsEnum(RoleEnum, { each: true })
+  roles?: RoleEnum[];
 }

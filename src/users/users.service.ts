@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { User, CreateUserDto } from 'src/models/user.model';
-import { RoleEnum } from 'src/models/role.model';
+import { RoleEnum, Role } from 'src/models/role.model';
 
 @Injectable()
 export class UsersService {
@@ -55,12 +55,32 @@ export class UsersService {
   }
 
   addUser(u: CreateUserDto): User {
-    const { firstName, lastName } = u;
+    const { firstName, lastName, roles: roleEnums } = u;
+    const roles = (roleEnums || [RoleEnum.User]).map(
+      (role: RoleEnum): Role => {
+        let text;
+        switch (role) {
+          case RoleEnum.Admin:
+            text = 'Admin';
+            break;
+          case RoleEnum.User:
+            text = 'User';
+            break;
+          case RoleEnum.Readonly:
+            text = 'Read Only';
+            break;
+          default:
+            text = 'N/A';
+            break;
+        }
+        return { key: role, display: text };
+      }
+    );
     const user: User = {
       id: `${this.users.length + 1}`,
       firstName,
       lastName,
-      roles: []
+      roles
     };
     this.users.push(user);
     return user;
